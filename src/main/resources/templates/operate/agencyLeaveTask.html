@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
+    <style>
+        .main_center {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+<div class="main_center">
+    <form class="layui-form" action="" onsubmit="return false">
+        <div class="layui-form-item">
+            <label class="layui-form-label">请假标题</label>
+            <div class="layui-input-inline">
+                <input type="hidden"
+                       name="taskId"
+                       id="taskId"
+                       disabled="disabled"
+                       class="layui-input"
+                       th:value="${models.get('taskId')}">
+                <input type="hidden"
+                       name="empLeaveKey"
+                       id="empLeaveKey"
+                       disabled="disabled"
+                       class="layui-input"
+                       th:value="${models.get('processInfo').empLeaveKey}">
+                <input type="text"
+                       name="title" required
+                       lay-verify="required"
+                       disabled="disabled"
+                       placeholder="请输入标题"
+                       autocomplete="off"
+                       class="layui-input"
+                       th:value="${models.get('processInfo').title}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请假类型</label>
+            <div class="layui-input-inline">
+                <select name="empLeaveType" lay-verify="required" disabled="disabled">
+                    <option value=""></option>
+                    <option value="0" th:selected="${models.get('processInfo').empLeaveType=='0'}">病假</option>
+                    <option value="1" th:selected="${models.get('processInfo').empLeaveType=='1'}">事假</option>
+                    <option value="2" th:selected="${models.get('processInfo').empLeaveType=='2'}">其它</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开始时间</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input"
+                       id="beginTime"
+                       disabled="disabled" name="beginTime"
+                       placeholder="yyyy-MM-dd HH:mm:ss"
+                       th:value="${#dates.format(models.get('processInfo').beginTime,'yyyy-MM-dd HH:mm:ss')}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input"
+                       id="enddingTime" disabled="disabled"
+                       name="enddingTime"
+                       placeholder="yyyy-MM-dd HH:mm:ss"
+                       th:value="${#dates.format(models.get('processInfo').enddingTime,'yyyy-MM-dd HH:mm:ss')}">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">请假理由</label>
+            <div class="layui-input-inline">
+                <textarea name="empLeaveReason"
+                          placeholder="请输入内容"
+                          disabled="disabled"
+                          class="layui-textarea"
+                          th:text="${models.get('processInfo').empLeaveReason}"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding: 0 40px">
+            <div class="layui-input-inline" th:each="sequenceFlow,sequenceFlowStat:${models.get('sequenceFlow')}">
+                <span>
+                    <button class="layui-btn agree" lay-submit
+                            lay-filter="submitFrom"
+                            name="outcome"
+                            id="agree"
+                            th:if="${sequenceFlowStat.index == 0}"
+                            th:text="${sequenceFlow}">立即提交
+                </button>
+                <button class="layui-btn back layui-btn-danger" lay-submit
+                        lay-filter="submitFrom"
+                        name="outcome"
+                        id="back"
+                        th:if="${sequenceFlowStat.index == 1}"
+                        th:text="${sequenceFlow}">驳回
+                </button>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    //Demo
+    layui.use(['form', 'jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let outcome;
+        $('.agree').bind('click', () => {
+            outcome = $('.agree').text()
+        })
+        $('.back').bind('click', () => {
+            outcome = $('.back').text()
+        })
+
+
+        //监听提交
+        form.on('submit(submitFrom)', function (data) {
+            $.ajax({
+                url: 'completeTask',
+                data: JSON.stringify({
+                    taskId: $('#taskId').val(),
+                    leaveBillId: $('#empLeaveKey').val(),
+                    outcome: outcome
+                }),
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.data === 'ok') {
+                        layer.msg("办理成功", {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            parent.layui.table.reload("agencyTask")
+                        })
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

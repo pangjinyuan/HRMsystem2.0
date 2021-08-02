@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.mapper.EmpLeaveBillMapper">
+
+    <resultMap id="BaseResultMap" type="cn.edu.guet.bean.EmpLeaveBill">
+        <id property="empLeaveKey" column="EMP_LEAVE_KEY" jdbcType="DECIMAL"/>
+        <result property="empId" column="EMP_ID" jdbcType="VARCHAR"/>
+        <result property="deptId" column="DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="empLeaveType" column="EMP_LEAVE_TYPE" jdbcType="VARCHAR"/>
+        <result property="beginTime" column="BEGIN_TIME" jdbcType="TIMESTAMP"/>
+        <result property="enddingTime" column="ENDDING_TIME" jdbcType="TIMESTAMP"/>
+        <result property="phoneNumber" column="PHONE_NUMBER" jdbcType="VARCHAR"/>
+        <result property="empLeaveReason" column="EMP_LEAVE_REASON" jdbcType="VARCHAR"/>
+        <result property="leaveHandler" column="LEAVE_HANDLER" jdbcType="VARCHAR"/>
+        <result property="empState" column="EMP_STATE" jdbcType="VARCHAR"/>
+        <result property="title" column="TITLE" jdbcType="VARCHAR"/>
+        <result property="leaveHandlerName" column="LEAVE_HANDLER_NAME" jdbcType="VARCHAR"/>
+        <result property="leaveUserName" column="LEAVE_USER_NAME" jdbcType="VARCHAR"/>
+        <result property="cancellationState" column="CANCELLATION_STATE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        EMP_LEAVE_KEY
+        ,EMP_ID,DEPT_ID,
+        EMP_LEAVE_TYPE,BEGIN_TIME,ENDDING_TIME,
+        PHONE_NUMBER,EMP_LEAVE_REASON,LEAVE_HANDLER,
+        EMP_STATE,TITLE,LEAVE_HANDLER_NAME,LEAVE_USER_NAME,CANCELLATION_STATE
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        *
+        from EMP_LEAVE_TABLE
+        where EMP_LEAVE_KEY = #{empLeaveKey,jdbcType=DECIMAL}
+    </select>
+    <select id="queryEmpLeaveBillsByEmpId" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from (
+        select ROWNUM rown,elt.*
+        from (
+        select elt.*,
+        (select EMP_NAME
+        from EMPLOYEES_INFO_TABLE
+        where EMP_ID = elt.EMP_ID) LEAVE_USER_NAME,
+        (select eit.EMP_NAME
+        from EMPLOYEES_INFO_TABLE eit
+        where eit.EMP_ID = elt.LEAVE_HANDLER) LEAVE_HANDLER_NAME
+        from EMP_LEAVE_TABLE elt
+        where EMP_ID = #{empId,jdbcType=VARCHAR}) elt) temp
+        where rown <![CDATA[ > ]]> ${iPage.start} and rown <![CDATA[ < ]]> ${iPage.end}
+    </select>
+    <select id="getDataCount" resultType="java.lang.Long">
+        select count(1) from EMP_LEAVE_TABLE
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from EMP_LEAVE_TABLE
+        where EMP_LEAVE_KEY = #{empLeaveKey,jdbcType=DECIMAL}
+    </delete>
+    <insert id="insert" parameterType="cn.edu.guet.bean.EmpLeaveBill"
+            useGeneratedKeys="true">
+        insert into EMP_LEAVE_TABLE
+        ( EMP_LEAVE_KEY, EMP_ID, DEPT_ID
+        , EMP_LEAVE_TYPE, BEGIN_TIME, ENDDING_TIME
+        , PHONE_NUMBER, EMP_LEAVE_REASON, LEAVE_HANDLER
+        , EMP_STATE,TITLE,CANCELLATION_STATE)
+        values ( #{empLeaveKey,jdbcType=DECIMAL}, #{empId,jdbcType=VARCHAR}, #{deptId,jdbcType=VARCHAR}
+               , #{empLeaveType,jdbcType=VARCHAR}, #{beginTime,jdbcType=VARCHAR}, #{enddingTime,jdbcType=VARCHAR}
+               , #{phoneNumber,jdbcType=VARCHAR}, #{empLeaveReason,jdbcType=VARCHAR}, #{leaveHandler,jdbcType=VARCHAR}
+               , #{empState,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.edu.guet.bean.EmpLeaveBill"
+            useGeneratedKeys="true">
+        insert into EMP_LEAVE_TABLE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="empLeaveKey != null">empLeaveKey,</if>
+            <if test="empId != null">empId,</if>
+            <if test="deptId != null">deptId,</if>
+            <if test="empLeaveType != null">empLeaveType,</if>
+            <if test="beginTime != null">beginTime,</if>
+            <if test="enddingTime != null">enddingTime,</if>
+            <if test="phoneNumber != null">phoneNumber,</if>
+            <if test="empLeaveReason != null">empLeaveReason,</if>
+            <if test="leaveHandler != null">leaveHandler,</if>
+            <if test="empState != null">empLeave,</if>
+            <if test="cancellationState != null">cancellationState,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="empLeaveKey != null">EMP_LEAVE_KEY = #{empLeaveKey,jdbcType=DECIMAL},</if>
+            <if test="empId != null">EMP_ID = #{empId,jdbcType=VARCHAR},</if>
+            <if test="deptId != null">DEPT_ID = #{deptId,jdbcType=VARCHAR},</if>
+            <if test="empLeaveType != null">EMP_LEAVE_TYPE = #{empLeaveType,jdbcType=VARCHAR},</if>
+            <if test="beginTime != null">BEGIN_TIME = #{beginTime,jdbcType=VARCHAR},</if>
+            <if test="enddingTime != null">ENDDING_TIME = #{enddingTime,jdbcType=VARCHAR},</if>
+            <if test="phoneNumber != null">PHONE_NUMBER = #{phoneNumber,jdbcType=VARCHAR},</if>
+            <if test="empLeaveReason != null">EMP_LEAVE_REASON = #{empLeaveReason,jdbcType=VARCHAR},</if>
+            <if test="leaveHandler != null">LEAVE_HANDLER = #{leaveHandler,jdbcType=VARCHAR},</if>
+            <if test="empState != null">EMP_LEAVE = #{empState,jdbcType=VARCHAR},</if>
+            <if test="cancellationState != null">CANCELLATION_STATE = #{cancellationState,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.edu.guet.bean.EmpLeaveBill">
+        update EMP_LEAVE_TABLE
+        <set>
+            <if test="empId != null">
+                EMP_ID = #{empId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                DEPT_ID = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="empLeaveType != null">
+                EMP_LEAVE_TYPE = #{empLeaveType,jdbcType=VARCHAR},
+            </if>
+            <if test="beginTime != null">
+                BEGIN_TIME = #{beginTime,jdbcType=VARCHAR},
+            </if>
+            <if test="enddingTime != null">
+                ENDDING_TIME = #{enddingTime,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                PHONE_NUMBER = #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="empLeaveReason != null">
+                EMP_LEAVE_REASON = #{empLeaveReason,jdbcType=VARCHAR},
+            </if>
+            <if test="leaveHandler != null">
+                LEAVE_HANDLER = #{leaveHandler,jdbcType=VARCHAR},
+            </if>
+            <if test="empState != null">
+                EMP_STATE = #{empState,jdbcType=VARCHAR},
+            </if>
+            <if test="cancellationState != null">
+                CANCELLATION_STATE = #{cancellationState,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where EMP_LEAVE_KEY = #{empLeaveKey,jdbcType=DECIMAL}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.edu.guet.bean.EmpLeaveBill">
+        update EMP_LEAVE_TABLE
+        set EMP_ID           = #{empId,jdbcType=VARCHAR},
+            DEPT_ID          = #{deptId,jdbcType=VARCHAR},
+            EMP_LEAVE_TYPE   = #{empLeaveType,jdbcType=VARCHAR},
+            BEGIN_TIME       = #{beginTime,jdbcType=VARCHAR},
+            ENDDING_TIME     = #{enddingTime,jdbcType=VARCHAR},
+            PHONE_NUMBER     = #{phoneNumber,jdbcType=VARCHAR},
+            EMP_LEAVE_REASON = #{empLeaveReason,jdbcType=VARCHAR},
+            LEAVE_HANDLER    = #{leaveHandler,jdbcType=VARCHAR},
+            EMP_STATE        = #{empState,jdbcType=VARCHAR},
+            CANCELLATION_STATE=#{cancellationState,jdbcType=VARCHAR}
+        where EMP_LEAVE_KEY = #{empLeaveKey,jdbcType=DECIMAL}
+    </update>
+</mapper>

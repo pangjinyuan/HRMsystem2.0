@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
+    <style>
+        .main_center {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+<div class="main_center">
+    <form class="layui-form" action="" onsubmit="return false">
+        <div class="layui-form-item">
+            <label class="layui-form-label">部署名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="deployName" id="deployName" required  lay-verify="required" placeholder="请输入部署名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">部署文件</label>
+            <div class="layui-input-inline">
+                <div class="layui-upload-drag" id="test10">
+                    <i class="layui-icon"></i>
+                    <p>点击上传或拖拽zip文件到此处</p>
+                    <div class="layui-hide" id="uploadDemoView">
+                        <hr>
+                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit id="addWorkFlow" lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    //Demo
+    layui.use(['form','jquery','upload'], function(){
+        let form = layui.form;
+        let upload = layui.upload;
+        let $ = layui.jquery;
+
+        //拖拽上传
+        upload.render({
+            elem: '#test10'
+            ,url: '/workflow/addDeployData' //改成您自己的上传接口
+            ,auto: false
+            ,accept: 'file'
+            ,acceptMime: 'application/zip'
+            ,exts: 'zip'
+            ,field: 'mf'
+            ,data: {
+                deployName: function (){
+                    return $('#deployName').val();
+                }
+            }
+            ,bindAction: '#addWorkFlow'
+            ,done : (res) => {
+                if (res.data ==='ok'){
+                    layer.msg("添加成功",{icon:1,time:1000},function (){
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        parent.layui.table.reload("deployTest")
+                        parent.layui.table.reload("deployDefinitionTest")
+                    })
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

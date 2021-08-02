@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.mapper.EmployeesInfoMapper">
+
+    <resultMap id="BaseResultMap" type="cn.edu.guet.bean.EmployeesInfo">
+        <id property="empInfoKey" column="EMP_INFO_KEY" jdbcType="DECIMAL"/>
+        <result property="empId" column="EMP_ID" jdbcType="VARCHAR"/>
+        <result property="deptId" column="DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="postId" column="POST_ID" jdbcType="VARCHAR"/>
+        <result property="empName" column="EMP_NAME" jdbcType="VARCHAR"/>
+        <result property="empSex" column="EMP_SEX" jdbcType="VARCHAR"/>
+        <result property="empState" column="EMP_STATE" jdbcType="VARCHAR"/>
+        <result property="empEntryTime" column="EMP_ENTRY_TIME" jdbcType="VARCHAR"/>
+        <result property="empIdentifyType" column="EMP_IDENTIFY_TYPE" jdbcType="VARCHAR"/>
+        <result property="empIdentifyNumber" column="EMP_IDENTIFY_NUMBER" jdbcType="VARCHAR"/>
+        <result property="empPhoneNumber" column="EMP_PHONE_NUMBER" jdbcType="VARCHAR"/>
+        <result property="empEMail" column="EMP_E_MAIL" jdbcType="VARCHAR"/>
+        <result property="empNation" column="EMP_NATION" jdbcType="VARCHAR"/>
+        <result property="empNativePlace" column="EMP_NATIVE_PLACE" jdbcType="VARCHAR"/>
+        <result property="empBirthday" column="EMP_BIRTHDAY" jdbcType="VARCHAR"/>
+        <result property="empLocation" column="EMP_LOCATION" jdbcType="VARCHAR"/>
+        <result property="empEduBgd" column="EMP_EDU_BGD" jdbcType="VARCHAR"/>
+        <result property="empEntryWay" column="EMP_ENTRY_WAY" jdbcType="VARCHAR"/>
+        <result property="empEduSchool" column="EMP_EDU_SCHOOL" jdbcType="VARCHAR"/>
+        <result property="leader" column="LEADER" jdbcType="DECIMAL"/>
+    </resultMap>
+    <resultMap id="departmentDto" type="cn.edu.guet.dto.DepartmentPartDto">
+        <result property="deptId" column="DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="deptBossId" column="DEPT_BOSS_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        EMP_INFO_KEY
+        ,EMP_ID,DEPT_ID,
+        POST_ID,EMP_NAME,EMP_SEX,
+        EMP_STATE,EMP_ENTRY_TIME,EMP_IDENTIFY_TYPE,
+        EMP_IDENTIFY_NUMBER,EMP_PHONE_NUMBER,EMP_E_MAIL,
+        EMP_NATION,EMP_NATIVE_PLACE,EMP_BIRTHDAY,
+        EMP_LOCATION,EMP_EDU_BGD,EMP_ENTRY_WAY,
+        EMP_EDU_SCHOOL,LEADER
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from EMPLOYEES_INFO_TABLE
+        where EMP_INFO_KEY = #{empInfoKey,jdbcType=DECIMAL}
+    </select>
+    <select id="getCurrentUserDepartmentDto" parameterType="string" resultMap="departmentDto">
+        select dt.DEPT_BOSS_ID, dt.DEPT_ID
+        from EMPLOYEES_INFO_TABLE eit
+                 left join DEPARTMENT_TABLE dt on eit.DEPT_ID = dt.DEPT_ID
+        where eit.EMP_ID = #{empId,jdbcType=VARCHAR}
+    </select>
+    <select id="queryLeaderByEmpId" resultMap="BaseResultMap">
+        select *
+        from EMPLOYEES_INFO_TABLE et
+        where EMP_INFO_KEY = (select LEADER
+                              from EMPLOYEES_INFO_TABLE eit
+                              where EMP_ID = #{empId,jdbcType=VARCHAR})
+    </select>
+    <select id="queryEmpLeaderByHeadLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from EMPLOYEES_INFO_TABLE
+        where EMP_ID like concat(concat('%',#{empId,jdbcType=VARCHAR}),'%')
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from EMPLOYEES_INFO_TABLE
+        where EMP_INFO_KEY = #{empInfoKey,jdbcType=DECIMAL}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.edu.guet.bean.EmployeesInfo"
+            useGeneratedKeys="true">
+        insert into EMPLOYEES_INFO_TABLE
+        ( EMP_INFO_KEY, EMP_ID, DEPT_ID
+        , POST_ID, EMP_NAME, EMP_SEX
+        , EMP_STATE, EMP_ENTRY_TIME, EMP_IDENTIFY_TYPE
+        , EMP_IDENTIFY_NUMBER, EMP_PHONE_NUMBER, EMP_E_MAIL
+        , EMP_NATION, EMP_NATIVE_PLACE, EMP_BIRTHDAY
+        , EMP_LOCATION, EMP_EDU_BGD, EMP_ENTRY_WAY
+        , EMP_EDU_SCHOOL, LEADER)
+        values ( #{empInfoKey,jdbcType=DECIMAL}, #{empId,jdbcType=VARCHAR}, #{deptId,jdbcType=VARCHAR}
+               , #{postId,jdbcType=VARCHAR}, #{empName,jdbcType=VARCHAR}, #{empSex,jdbcType=VARCHAR}
+               , #{empState,jdbcType=VARCHAR}, #{empEntryTime,jdbcType=VARCHAR}, #{empIdentifyType,jdbcType=VARCHAR}
+               , #{empIdentifyNumber,jdbcType=VARCHAR}, #{empPhoneNumber,jdbcType=VARCHAR}, #{empEMail,jdbcType=VARCHAR}
+               , #{empNation,jdbcType=VARCHAR}, #{empNativePlace,jdbcType=VARCHAR}, #{empBirthday,jdbcType=VARCHAR}
+               , #{empLocation,jdbcType=VARCHAR}, #{empEduBgd,jdbcType=VARCHAR}, #{empEntryWay,jdbcType=VARCHAR}
+               , #{empEduSchool,jdbcType=VARCHAR}, #{leader,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.edu.guet.bean.EmployeesInfo"
+            useGeneratedKeys="true">
+        insert into EMPLOYEES_INFO_TABLE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="empInfoKey != null">empInfoKey,</if>
+            <if test="empId != null">empId,</if>
+            <if test="deptId != null">deptId,</if>
+            <if test="postId != null">postId,</if>
+            <if test="empName != null">empName,</if>
+            <if test="empSex != null">empSex,</if>
+            <if test="empState != null">empState,</if>
+            <if test="empEntryTime != null">empEntryTime,</if>
+            <if test="empIdentifyType != null">empIdentifyType,</if>
+            <if test="empIdentifyNumber != null">empIdentifyNumber,</if>
+            <if test="empPhoneNumber != null">empPhoneNumber,</if>
+            <if test="empEMail != null">empEMail,</if>
+            <if test="empNation != null">empNation,</if>
+            <if test="empNativePlace != null">empNativePlace,</if>
+            <if test="empBirthday != null">empBirthday,</if>
+            <if test="empLocation != null">empLocation,</if>
+            <if test="empEduBgd != null">empEduBgd,</if>
+            <if test="empEntryWay != null">empEntryWay,</if>
+            <if test="empEduSchool != null">empEduSchool,</if>
+            <if test="leader != null">leader,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="empInfoKey != null">EMP_INFO_KEY = #{empInfoKey,jdbcType=DECIMAL},</if>
+            <if test="empId != null">EMP_ID = #{empId,jdbcType=VARCHAR},</if>
+            <if test="deptId != null">DEPT_ID = #{deptId,jdbcType=VARCHAR},</if>
+            <if test="postId != null">POST_ID = #{postId,jdbcType=VARCHAR},</if>
+            <if test="empName != null">EMP_NAME = #{empName,jdbcType=VARCHAR},</if>
+            <if test="empSex != null">EMP_SEX = #{empSex,jdbcType=VARCHAR},</if>
+            <if test="empState != null">EMP_STATE = #{empState,jdbcType=VARCHAR},</if>
+            <if test="empEntryTime != null">EMP_ENTRY_TIME = #{empEntryTime,jdbcType=VARCHAR},</if>
+            <if test="empIdentifyType != null">EMP_IDENTIFY_TYPE = #{empIdentifyType,jdbcType=VARCHAR},</if>
+            <if test="empIdentifyNumber != null">EMP_IDENTIFY_NUMBER = #{empIdentifyNumber,jdbcType=VARCHAR},</if>
+            <if test="empPhoneNumber != null">EMP_PHONE_NUMBER = #{empPhoneNumber,jdbcType=VARCHAR},</if>
+            <if test="empEMail != null">EMP_E_MAIL = #{empEMail,jdbcType=VARCHAR},</if>
+            <if test="empNation != null">EMP_NATION = #{empNation,jdbcType=VARCHAR},</if>
+            <if test="empNativePlace != null">EMP_NATIVE_PLACE = #{empNativePlace,jdbcType=VARCHAR},</if>
+            <if test="empBirthday != null">EMP_BIRTHDAY = #{empBirthday,jdbcType=VARCHAR},</if>
+            <if test="empLocation != null">EMP_LOCATION = #{empLocation,jdbcType=VARCHAR},</if>
+            <if test="empEduBgd != null">EMP_EDU_BGD = #{empEduBgd,jdbcType=VARCHAR},</if>
+            <if test="empEntryWay != null">EMP_ENTRY_WAY = #{empEntryWay,jdbcType=VARCHAR},</if>
+            <if test="empEduSchool != null">EMP_EDU_SCHOOL = #{empEduSchool,jdbcType=VARCHAR},</if>
+            <if test="leader != null">LEADER = #{leader,jdbcType=DECIMAL},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.edu.guet.bean.EmployeesInfo">
+        update EMPLOYEES_INFO_TABLE
+        <set>
+            <if test="empId != null">
+                EMP_ID = #{empId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                DEPT_ID = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="postId != null">
+                POST_ID = #{postId,jdbcType=VARCHAR},
+            </if>
+            <if test="empName != null">
+                EMP_NAME = #{empName,jdbcType=VARCHAR},
+            </if>
+            <if test="empSex != null">
+                EMP_SEX = #{empSex,jdbcType=VARCHAR},
+            </if>
+            <if test="empState != null">
+                EMP_STATE = #{empState,jdbcType=VARCHAR},
+            </if>
+            <if test="empEntryTime != null">
+                EMP_ENTRY_TIME = #{empEntryTime,jdbcType=VARCHAR},
+            </if>
+            <if test="empIdentifyType != null">
+                EMP_IDENTIFY_TYPE = #{empIdentifyType,jdbcType=VARCHAR},
+            </if>
+            <if test="empIdentifyNumber != null">
+                EMP_IDENTIFY_NUMBER = #{empIdentifyNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="empPhoneNumber != null">
+                EMP_PHONE_NUMBER = #{empPhoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="empEMail != null">
+                EMP_E_MAIL = #{empEMail,jdbcType=VARCHAR},
+            </if>
+            <if test="empNation != null">
+                EMP_NATION = #{empNation,jdbcType=VARCHAR},
+            </if>
+            <if test="empNativePlace != null">
+                EMP_NATIVE_PLACE = #{empNativePlace,jdbcType=VARCHAR},
+            </if>
+            <if test="empBirthday != null">
+                EMP_BIRTHDAY = #{empBirthday,jdbcType=VARCHAR},
+            </if>
+            <if test="empLocation != null">
+                EMP_LOCATION = #{empLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="empEduBgd != null">
+                EMP_EDU_BGD = #{empEduBgd,jdbcType=VARCHAR},
+            </if>
+            <if test="empEntryWay != null">
+                EMP_ENTRY_WAY = #{empEntryWay,jdbcType=VARCHAR},
+            </if>
+            <if test="empEduSchool != null">
+                EMP_EDU_SCHOOL = #{empEduSchool,jdbcType=VARCHAR},
+            </if>
+            <if test="leader != null">
+                LEADER = #{leader,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where EMP_INFO_KEY = #{empInfoKey,jdbcType=DECIMAL}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.edu.guet.bean.EmployeesInfo">
+        update EMPLOYEES_INFO_TABLE
+        set EMP_ID              = #{empId,jdbcType=VARCHAR},
+            DEPT_ID             = #{deptId,jdbcType=VARCHAR},
+            POST_ID             = #{postId,jdbcType=VARCHAR},
+            EMP_NAME            = #{empName,jdbcType=VARCHAR},
+            EMP_SEX             = #{empSex,jdbcType=VARCHAR},
+            EMP_STATE           = #{empState,jdbcType=VARCHAR},
+            EMP_ENTRY_TIME      = #{empEntryTime,jdbcType=VARCHAR},
+            EMP_IDENTIFY_TYPE   = #{empIdentifyType,jdbcType=VARCHAR},
+            EMP_IDENTIFY_NUMBER = #{empIdentifyNumber,jdbcType=VARCHAR},
+            EMP_PHONE_NUMBER    = #{empPhoneNumber,jdbcType=VARCHAR},
+            EMP_E_MAIL          = #{empEMail,jdbcType=VARCHAR},
+            EMP_NATION          = #{empNation,jdbcType=VARCHAR},
+            EMP_NATIVE_PLACE    = #{empNativePlace,jdbcType=VARCHAR},
+            EMP_BIRTHDAY        = #{empBirthday,jdbcType=VARCHAR},
+            EMP_LOCATION        = #{empLocation,jdbcType=VARCHAR},
+            EMP_EDU_BGD         = #{empEduBgd,jdbcType=VARCHAR},
+            EMP_ENTRY_WAY       = #{empEntryWay,jdbcType=VARCHAR},
+            EMP_EDU_SCHOOL      = #{empEduSchool,jdbcType=VARCHAR},
+            LEADER              = #{leader,jdbcType=DECIMAL}
+        where EMP_INFO_KEY = #{empInfoKey,jdbcType=DECIMAL}
+    </update>
+</mapper>

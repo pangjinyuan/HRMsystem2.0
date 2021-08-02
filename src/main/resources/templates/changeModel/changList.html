@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addLeaveBill">
+            <i class="layui-icon layui-icon-addition"></i>添加变动申请
+        </button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">
+            <i class="layui-icon layui-icon-delete"></i>批量删除
+        </button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">
+            <i class="layui-icon layui-icon-search"></i>查看
+        </button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    {{# if(d.empState == 0){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="submitApplication">申请</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{#  } else if(d.empState == 1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="viewSpProcess">审批进度查询</a>
+    {{#  } else if(d.empState == 2){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="viewSpProcess">审批进度查询</a>
+    {{#  } else if(d.empState == 3){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="viewSpProcess">审批进度查询</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+    {{#  } }}
+</script>
+
+
+<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer','jquery'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let laydate = layui.laydate;
+        let layer = layui.layer;
+        let $ = layui.jquery;
+        //温馨提示：默认由前端自动合计当前行数据。从 layui 2.5.6 开始： 若接口直接返回了合计行数据，则优先读取接口合计行数据。
+        //详见：https://www.layui.com/doc/modules/table.html#totalRow
+        let tableIns = table.render({
+            elem: '#test'
+            , url: '/change/changeList'
+            , limit: 5
+            , limits: [5, 10, 15, 20]
+            , toolbar: '#toolbarDemo'
+            , title: '变动情况'
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    , {
+                    field: 'post_change_key',
+                    title: 'ID',
+                    width: 100,
+                    fixed: 'left',
+                    unresize: true,
+                    sort: true,
+                    align: "center"
+                }
+                    , {
+                    field: 'title', title: '请假标题', width: 100, align: "center", templet: function (res) {
+                        return '<em>' + res.title + '</em>'
+                    }
+                }
+                    , {field: 'empLeaveReason', title: '内容', width: 180, align: "center"}
+                    , {field: 'beginTime', title: '请假开始时间', width: 170, sort: true, align: "center"}
+                    , {field: 'enddingTime', title: '请假结束时间', width: 170, sort: true, align: "center"}
+                    , {field: 'leaveUserName', title: '请假人', width: 100, align: "center"}
+                    , {field: 'leaveHandlerName', title: '审批人', width: 100, align: "center"}
+                    , {field: 'empState', title: '请假状态', width: 110, align: "center",templet: function (res) {
+                        let html = '';
+                        if (res.empState == 0) {
+                            html = '<font color=#FF5722>未提交</font>'
+                        }
+                        else if (res.empState == 1) {
+                            html = '<font color=#5FB878>审批中</font>'
+                        }
+                        else if (res.empState == 2) {
+                            html = '<font color=#01AAED>审批完成</font>'
+                        }
+                        else if (res.empState == 3) {
+                            html = '<font color=#2F4056>已放弃</font>'
+                        }
+                        return html;
+                    }}
+                    , {
+                    fixed: 'right', title: '操作', toolbar: '#barDemo', width: 230, align: "center"
+                }
+                ]
+            ]
+            , page: true
+        });
+
+        //监听工具条
+        table.on('tool(test)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                /*layer.alert('编辑行：<br>' + JSON.stringify(data))*/
+                window.edit(obj)
+            } else if (obj.event === 'submitApplication') {
+                startProcess(obj)
+            } else if (obj.event === 'viewSpProcess') {
+                layer.msg('查看流程')
+            } else if (obj.event === 'LeaveCancellation') {
+                LeaveCancellation(obj)
+            }
+        });
+
+        //工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            let checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
+                    break;
+                case 'addLeaveBill':
+                    window.add()
+                    break;
+            }
+        });
+        //开始日期和时间
+        laydate.render({
+            elem: '#start',
+            type: 'datetime'
+        })
+        //结束日期和时间
+        laydate.render({
+            elem: '#end',
+            type: 'datetime'
+        })
+        //给window添加方法
+        window.add = () => {
+            layer.open({
+                type: 2,
+                title: '新增请假单',
+                shade: '0.1',
+                area: ['700px', '650px'],
+                anim: 5,
+                content: '/leavebill/goToAddLeaveBill'
+            })
+        }
+        //给window添加编辑的方法
+        window.edit = (obj) => {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: '0.1',
+                area: ['700px', '650px'],
+                anim: 5,
+                content: `/leavebill/eidtLeaveBill?empLeaveKey=${obj.data.empLeaveKey}`
+            });
+        }
+        //启动流程
+        function startProcess(data) {
+            layer.confirm('确定要提交【' + data.data.leaveUserName + '】请假单吗？', {icon: 3, title: '提示信息'}, function (index) {
+                $.post("/workflow/startLeaveProcess", {
+                    leaveBillId: data.data.empLeaveKey,  //将需要删除的id作为参数传入
+                    processType: 'leaveBill'
+                }, function (data) {
+                    //刷新table
+                    tableIns.reload();
+                    //关闭提示框
+                    layer.close(index);
+                })
+            });
+        }
+        //销假申请
+        function LeaveCancellation(data){
+            layer.confirm('确定要提交【' + data.data.leaveUserName + '】销假单吗？', {icon: 3, title: '提示信息'}, function (index) {
+                $.post("/workflow/submitLeaveCancellation", {
+                    leaveBillId: data.data.empLeaveKey,  //将需要删除的id作为参数传入
+                    processType: 'leaveCancellation'
+                }, function (data) {
+                    //刷新table
+                    tableIns.reload();
+                    //关闭提示框
+                    layer.close(index);
+                })
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

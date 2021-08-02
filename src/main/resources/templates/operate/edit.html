@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
+  <style>
+    .main_center {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+<div class="main_center">
+  <form class="layui-form" action="">
+    <div class="layui-form-item">
+      <label class="layui-form-label">请假标题</label>
+      <div class="layui-input-inline">
+        <input type="text" name="title" required  lay-verify="required" th:value="${empLeaveBillVo.title}"
+               placeholder="请输入标题" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">请假类型</label>
+      <div class="layui-input-inline">
+        <select name="empLeaveType" lay-verify="required" th:value="${empLeaveBillVo.empLeaveType}">
+          <option value=""></option>
+          <option value="0" th:selected="${empLeaveBillVo.empLeaveType=='0'}">病假</option>
+          <option value="1" th:selected="${empLeaveBillVo.empLeaveType=='1'}">事假</option>
+          <option value="2" th:selected="${empLeaveBillVo.empLeaveType=='2'}">其它</option>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">开始时间</label>
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="beginTime" th:value="${#dates.format(empLeaveBillVo.beginTime,'yyyy-MM-dd HH:mm:ss')}"
+               name="beginTime" placeholder="yyyy-MM-dd HH:mm:ss">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">结束时间</label>
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="enddingTime" th:value="${#dates.format(empLeaveBillVo.enddingTime,'yyyy-MM-dd HH:mm:ss')}"
+               name="enddingTime" placeholder="yyyy-MM-dd HH:mm:ss">
+      </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">请假理由</label>
+      <div class="layui-input-inline">
+        <textarea name="empLeaveReason" placeholder="请输入内容" class="layui-textarea" th:text="${empLeaveBillVo.empLeaveReason}"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+  //Demo
+  layui.use(['form','laydate','jquery'], function(){
+    let form = layui.form;
+    let laydate = layui.laydate;
+    let $ = layui.jquery;
+
+    //监听提交
+    form.on('submit(formDemo)', function(data){
+      $.ajax({
+        url:'/leavebill/addLeaveBill',
+        data: JSON.stringify(data.field),
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'post',
+        success:function (result){
+          if (result.data ==='ok'){
+            layer.msg("添加成功",{icon:1,time:1000},function (){
+              parent.layer.close(parent.layer.getFrameIndex(window.name));
+              parent.layui.table.reload("test")
+            })
+          }
+        }
+      })
+      return false;
+    });
+    //日期使用
+    laydate.render({
+      elem: '#beginTime',
+      type: 'datetime'
+    })
+    laydate.render({
+      elem: '#enddingTime',
+      type: 'datetime'
+    })
+  });
+</script>
+</body>
+</html>

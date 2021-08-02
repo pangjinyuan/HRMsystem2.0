@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.mapper.UserAndNameMapper">
+    <resultMap id="userAndName" type="cn.edu.guet.dto.UserAndNameDto">
+        <result property="empId" jdbcType="VARCHAR" column="EMP_ID"/>
+        <result property="empName" jdbcType="VARCHAR" column="EMP_NAME"/>
+    </resultMap>
+    <sql id="Base_User_Name">
+        EMP_ID,EMP_NAME
+    </sql>
+    <select id="getUserEntityByEmpId" resultMap="userAndName">
+        select
+        <include refid="Base_User_Name"/>
+        from EMP_ID_NAME_VIEW
+        where EMP_ID = #{empId,jdbcType=VARCHAR}
+    </select>
+</mapper>

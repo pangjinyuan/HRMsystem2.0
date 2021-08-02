@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
+</head>
+<body>
+<blockquote class="layui-elem-quote" style="margin-top: 100px;">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">部署名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="realName" placeholder="" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="user-query">
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button type="reset" class="layui-btn layui-btn-sm">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </div>
+    </form>
+</blockquote>
+<table class="layui-hide" id="deployTest" lay-filter="deployTest"></table>
+<table class="layui-hide" style="margin-top: 200px" id="deployDefinitionTest" lay-filter="deployDefinitionTest"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addProcessDeploy">
+            <i class="layui-icon layui-icon-addition"></i>添加流程部署
+        </button>
+    </div>
+</script>
+<!--目没有用这个-->
+<script type="text/html" id="deployBarDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer', 'jquery'], function () {
+        let table = layui.table;
+        let layer = layui.layer;
+        let $ = layui.jquery;
+        //温馨提示：默认由前端自动合计当前行数据。从 layui 2.5.6 开始： 若接口直接返回了合计行数据，则优先读取接口合计行数据。
+        //详见：https://www.layui.com/doc/modules/table.html#totalRow
+        table.render({
+            elem: '#deployTest'
+            , url: '/workflow/viewDeploymentInfo'
+            , toolbar: '#toolbarDemo'
+            , limit: 5
+            , limits: [5, 10, 15, 20]
+            , title: '流程部署信息'
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left',width: 250,}
+                    , {
+                    field: 'id',
+                    title: '部署ID',
+                    width: 250,
+                    fixed: 'left',
+                    unresize: true,
+                    sort: true,
+                    align: "center"
+                }
+                    , {
+                    field: 'name', title: '部署名称', width: 250, align: "center", templet: function (res) {
+                        return '<em>' + res.name + '</em>'
+                    }
+                }
+                    , {field: 'deploymentTime', title: '部署时间', width: 250, sort: true, align: "center"}
+                    , {
+                    fixed: 'right', title: '操作', toolbar: '#deployBarDemo', width: 250, align: "center"
+                }
+                ]
+            ]
+            , page: true
+        });
+
+
+        let processInstance = table.render({
+            elem: '#deployDefinitionTest'
+            , url: '/workflow/viewDefinitionInfo'
+            , limit: 5
+            , limits: [5, 10, 15, 20]
+            , title: '流程定义信息'
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    , {
+                    field: 'id',
+                    title: '流程定义ID',
+                    width: 180,
+                    fixed: 'left',
+                    unresize: true,
+                    sort: true,
+                    align: "center"
+                }
+                    , {
+                    field: 'name', title: '定义名称', width: 180, align: "center", templet: function (res) {
+                        return '<em>' + res.name + '</em>'
+                    }
+                }
+                    , {field: 'key', title: '定义KEY', width: 180, sort: true, align: "center"}
+                    , {field: 'version', title: '定义版本', width: 120, sort: true, align: "center"}
+                    , {field: 'deploymentId', title: '部署ID', width: 120, sort: true, align: "center"}
+                    , {field: 'resourceName', title: '资源名称[bpmn]', width: 210, sort: true, align: "center"}
+                    , {field: 'diagramResourceName', title: '资源名称[png]', width: 210, sort: true, align: "center"}
+                ]
+            ]
+            , page: true
+        });
+
+        //监听工具条
+        table.on('tool(deployTest)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                delProcess(obj)
+            } else if (obj.event === 'edit') {
+                /*layer.alert('编辑行：<br>' + JSON.stringify(data))*/
+                window.edit(obj)
+            } else if (obj.event === 'SubmitApplication') {
+                layer.msg('提交申请')
+            } else if (obj.event === 'viewSpProcess') {
+                layer.msg('查看流程')
+            }
+        });
+
+        //工具栏事件
+        table.on('toolbar(deployTest)', function (obj) {
+            let checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
+                    break;
+                case 'addLeaveBill':
+                    window.add()
+                    break;
+                case 'addProcessDeploy':
+                    window.addProcessDeploy()
+                    break;
+            }
+        });
+
+        //给window添加
+        window.addProcessDeploy = () => {
+            layer.open({
+                type: 2,
+                title: '添加流程',
+                shade: '0.1',
+                area: ['600px', '600px'],
+                anim: 5,
+                content: '/workflow/addProcessDeploy'
+            })
+        }
+        //给window添加方法
+        window.add = () => {
+            layer.open({
+                type: 2,
+                title: '新增请假单',
+                shade: '0.1',
+                area: ['700px', '650px'],
+                anim: 5,
+                content: '/leavebill/goToAddLeaveBill'
+            })
+        }
+        //给window添加编辑的方法
+        window.edit = (obj) => {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: '0.1',
+                area: ['700px', '650px'],
+                anim: 5,
+                content: `/leavebill/eidtLeaveBill?empLeaveKey=${obj.data.empLeaveKey}`
+            });
+        }
+        //启动流程
+        function delProcess(data) {
+            layer.confirm('真的删除该部署流程吗?', {icon: 3, title: '提示信息'}, function (index) {
+                $.post("/workflow/delDeployData", {
+                    deploymentId: data.data.id,  //将需要删除的id作为参数传入
+                }, function (res) {
+                    //删除
+                    data.del();
+                    //关闭提示框
+                    processInstance.reload()
+                    layer.close(index);
+                })
+            });
+            // layer.confirm('真的删除行么', function (index) {
+            //     obj.del();
+            //     layer.close(index);
+            // });
+        }
+    });
+</script>
+
+</body>
+</html>
