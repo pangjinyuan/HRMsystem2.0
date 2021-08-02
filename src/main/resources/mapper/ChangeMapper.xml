@@ -3,23 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.edu.guet.mapper.UserMapper">
-    <select id="getAll" resultType="cn.edu.guet.bean.User">
+<mapper namespace="cn.edu.guet.mapper.ChangeMapper">
+    <select id="getAll" resultType="cn.edu.guet.bean.Change">
         SELECT * FROM POST_CHANGE_TABLE ORDER BY post_change_key
     </select>
-    <delete id="delete" parameterType="cn.edu.guet.bean.User">
+    <delete id="delete" parameterType="cn.edu.guet.bean.Change">
         delete from POST_CHANGE_TABLE where emp_id=#{emp_id}
     </delete>
-    <insert id="add"  parameterType="cn.edu.guet.bean.User">
+    <insert id="add"  parameterType="cn.edu.guet.bean.Change">
        INSERT INTO POST_CHANGE_TABLE(emp_id,dept_id,dept_name,post_id,post_name,emp_name,emp_sex,emp_entry_time,change_type,emp_phone_number) VALUES (
        #{emp_id,jdbcType=VARCHAR},#{dept_id,jdbcType=VARCHAR}, #{dept_name,jdbcType=VARCHAR},#{post_id,jdbcType=VARCHAR}, #{post_name,jdbcType=VARCHAR},
        #{emp_name,jdbcType=VARCHAR},#{emp_sex,jdbcType=VARCHAR},#{emp_entry_time,jdbcType=VARCHAR},#{change_type,jdbcType=VARCHAR},
        #{emp_phone_number,jdbcType=VARCHAR})
     </insert>
-    <select id="getUserById" resultType="cn.edu.guet.bean.User">
+    <select id="getUserById" resultType="cn.edu.guet.bean.Change">
         select * from POST_CHANGE_TABLE where emp_id=#{emp_id,jdbcType=VARCHAR}
     </select>
-    <update id="update" parameterType="cn.edu.guet.bean.User">
+    <update id="update" parameterType="cn.edu.guet.bean.Change">
         update POST_CHANGE_TABLE set dept_id=#{dept_id,jdbcType=VARCHAR},dept_name=#{dept_name,jdbcType=VARCHAR},post_id=#{post_id,jdbcType=VARCHAR},
         post_name=#{post_name,jdbcType=VARCHAR},emp_name=#{emp_name,jdbcType=VARCHAR},emp_sex=#{emp_sex,jdbcType=VARCHAR},
         emp_entry_time=#{emp_entry_time,jdbcType=VARCHAR},change_type=#{change_type,jdbcType=VARCHAR},emp_phone_number=#{emp_phone_number,jdbcType=VARCHAR},
@@ -27,7 +27,7 @@
         where emp_id=#{emp_id,jdbcType=VARCHAR}
     </update>
 
-    <select id="findByName" resultType="cn.edu.guet.bean.User">
+    <select id="findByName" resultType="cn.edu.guet.bean.Change">
     select * from POST_CHANGE_TABLE where CONCAT(emp_id,emp_name)like '%'||#{value}||'%' ORDER BY post_change_key
     </select>
 

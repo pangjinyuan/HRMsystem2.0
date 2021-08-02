@@ -1,8 +1,8 @@
 package cn.edu.guet.controller;
 
 
-import cn.edu.guet.bean.User;
-import cn.edu.guet.bll.UserService;
+import cn.edu.guet.bean.Change;
+import cn.edu.guet.bll.ChangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,11 +13,11 @@ import java.util.List;
 
 @Controller
 @CrossOrigin
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/change")
+public class ChangeController {
 
     @Autowired
-    private UserService userService;
+    private ChangeService changeService;
 
 
 
@@ -27,8 +27,8 @@ public class UserController {
      */
     @RequestMapping("/deluser")
     public String deluser(String id){
-        userService.delete(id);
-        return "redirect:userList";
+        changeService.delete(id);
+        return "redirect:changeList";
     }
 
     //添加
@@ -47,14 +47,14 @@ public class UserController {
      */
     @RequestMapping("/finduser")
     public String finduser(Model model, String id){
-        User user = userService.getUserById(id);
-        model.addAttribute("user",user);
+        Change change = changeService.getUserById(id);
+        model.addAttribute("change", change);
         return "update";
     }
     @RequestMapping("/update")
-    public String updateuser(User user){
-        userService.update(user);
-        return "redirect:userList";
+    public String updateuser(Change change){
+        changeService.update(change);
+        return "redirect:changeList";
 
     }
 
@@ -105,13 +105,13 @@ public class UserController {
     //查询
     @RequestMapping("/getUser")
     public String findByName(Model model, String name){
-        List<User> userList = userService.findByName(name);
-        User user=new User();
+        List<Change> changeList = changeService.findByName(name);
+        Change change =new Change();
 //        PageInfo<User> pageInfo = new PageInfo<>(userList);
 //      model.addAttribute("pageInfo",pageInfo);
-        model.addAttribute("userList",userList);
-        model.addAttribute("user",user);
-        return "userList";
+        model.addAttribute("changeList", changeList);
+        model.addAttribute("change", change);
+        return "changeList";
     }
 
 
@@ -132,22 +132,22 @@ public class UserController {
 //        return "userList";
 //    }
 
-    @GetMapping("/userList")
-    public String userList(Model model) {
-        List<User> userList=userService.getAll();
-        User user=new User();
-        model.addAttribute("user",user);//引入demand对象
-        model.addAttribute("userList",userList);
-        return "userList";
+    @GetMapping("/changeList")
+    public String changeList(Model model) {
+        List<Change> changeList = changeService.getAll();
+        Change change =new Change();
+        model.addAttribute("change", change);//引入demand对象
+        model.addAttribute("changeList", changeList);
+        return "changeList";
     }
 
     @PostMapping("/add")
-    public String addDemands(Model model,@ModelAttribute("user") User user) {
+    public String addDemands(Model model,@ModelAttribute("change") Change change) {
         System.out.println("开始添加");
 //        demandsService.addDemands(demand);
-        userService.add(user);
+        changeService.add(change);
         System.out.println("添加成功");
-        return "redirect:userList";
+        return "redirect:changeList";
     }
 
 

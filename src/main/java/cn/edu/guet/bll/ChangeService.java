@@ -3,16 +3,16 @@ package cn.edu.guet.bll;
 
 
 
-import cn.edu.guet.bean.User;
+import cn.edu.guet.bean.Change;
 
 import java.util.List;
 
-public interface UserService {
+public interface ChangeService {
 
     /**
      *查询所有用户信息
      */
-    List<User> getAll();
+    List<Change> getAll();
     /**
      * 根据id删除用户
      */
@@ -21,18 +21,18 @@ public interface UserService {
     /**
      *新增用户
      */
-    int add(User user);
+    int add(Change change);
 
     /**
      *通过用户id查询
      */
-    User getUserById(String id);
+    Change getUserById(String id);
     /**
      * 更新用户信息
      */
-    int update(User user);
+    int update(Change change);
 
-    List<User> findByName(String name);
+    List<Change> findByName(String name);
 
 
 

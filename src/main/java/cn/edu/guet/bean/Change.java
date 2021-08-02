@@ -1,6 +1,6 @@
 package cn.edu.guet.bean;
 
-public class User {
+public class Change {
     public String emp_info_key;
     public String emp_id;
     public String dept_id;
@@ -25,14 +25,14 @@ public class User {
     public String post_change_key;
     public String change_type;
 
-    public User() {
+    public Change() {
     }
 
-    public User(User user) {
+    public Change(Change change) {
     }
 
 
-    public User(String emp_id, String dept_id, String dept_name, String post_id, String post_name, String emp_name, String emp_sex, String emp_entry_time, String change_type, String emp_phone_number, String emp_state) {
+    public Change(String emp_id, String dept_id, String dept_name, String post_id, String post_name, String emp_name, String emp_sex, String emp_entry_time, String change_type, String emp_phone_number, String emp_state) {
         this.emp_id = emp_id;
         this.dept_id = dept_id;
         this.dept_name = dept_name;
@@ -46,32 +46,7 @@ public class User {
         this.change_type = change_type;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "emp_info_key='" + emp_info_key + '\'' +
-                ", emp_id='" + emp_id + '\'' +
-                ", dept_id='" + dept_id + '\'' +
-                ", post_id='" + post_id + '\'' +
-                ", emp_name='" + emp_name + '\'' +
-                ", emp_sex='" + emp_sex + '\'' +
-                ", emp_state='" + emp_state + '\'' +
-                ", emp_entry_time='" + emp_entry_time + '\'' +
-                ", emp_identify_type='" + emp_identify_type + '\'' +
-                ", emp_identify_number='" + emp_identify_number + '\'' +
-                ", emp_phone_number='" + emp_phone_number + '\'' +
-                ", emp_e_mail='" + emp_e_mail + '\'' +
-                ", emp_nation='" + emp_nation + '\'' +
-                ", emp_native_place='" + emp_native_place + '\'' +
-                ", emp_birthday='" + emp_birthday + '\'' +
-                ", emp_location='" + emp_location + '\'' +
-                ", emp_edu_bgd='" + emp_edu_bgd + '\'' +
-                ", emp_entry_way='" + emp_entry_way + '\'' +
-                ", emp_edu_school='" + emp_edu_school + '\'' +
-                '}';
-    }
-
-    public User(String emp_info_key, String emp_id, String dept_id, String post_id, String emp_name, String emp_sex, String emp_state, String emp_entry_time, String emp_identify_type, String getEmp_identify_number, String emp_phone_number, String emp_e_mail, String emp_nation, String emp_native_place, String emp_location, String emp_edu_bgd, String emp_entry_way, String emp_edu_school) {
+    public Change(String emp_info_key, String emp_id, String dept_id, String post_id, String emp_name, String emp_sex, String emp_state, String emp_entry_time, String emp_identify_type, String getEmp_identify_number, String emp_phone_number, String emp_e_mail, String emp_nation, String emp_native_place, String emp_location, String emp_edu_bgd, String emp_entry_way, String emp_edu_school) {
         this.emp_info_key = emp_info_key;
         this.emp_id = emp_id;
         this.dept_id = dept_id;
@@ -266,6 +241,35 @@ public class User {
 
     public void setEmp_edu_school(String emp_edu_school) {
         this.emp_edu_school = emp_edu_school;
+    }
+
+    @Override
+    public String toString() {
+        return "Change{" +
+                "emp_info_key='" + emp_info_key + '\'' +
+                ", emp_id='" + emp_id + '\'' +
+                ", dept_id='" + dept_id + '\'' +
+                ", dept_name='" + dept_name + '\'' +
+                ", post_id='" + post_id + '\'' +
+                ", post_name='" + post_name + '\'' +
+                ", emp_name='" + emp_name + '\'' +
+                ", emp_sex='" + emp_sex + '\'' +
+                ", emp_state='" + emp_state + '\'' +
+                ", emp_entry_time='" + emp_entry_time + '\'' +
+                ", emp_identify_type='" + emp_identify_type + '\'' +
+                ", emp_identify_number='" + emp_identify_number + '\'' +
+                ", emp_phone_number='" + emp_phone_number + '\'' +
+                ", emp_e_mail='" + emp_e_mail + '\'' +
+                ", emp_nation='" + emp_nation + '\'' +
+                ", emp_native_place='" + emp_native_place + '\'' +
+                ", emp_birthday='" + emp_birthday + '\'' +
+                ", emp_location='" + emp_location + '\'' +
+                ", emp_edu_bgd='" + emp_edu_bgd + '\'' +
+                ", emp_entry_way='" + emp_entry_way + '\'' +
+                ", emp_edu_school='" + emp_edu_school + '\'' +
+                ", post_change_key='" + post_change_key + '\'' +
+                ", change_type='" + change_type + '\'' +
+                '}';
     }
 }
 

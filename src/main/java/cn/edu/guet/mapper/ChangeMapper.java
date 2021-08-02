@@ -1,16 +1,16 @@
 package cn.edu.guet.mapper;
 
-import cn.edu.guet.bean.User;
+import cn.edu.guet.bean.Change;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface UserMapper {
+public interface ChangeMapper {
     /**
      *查询所有用户信息
      */
-    List<User> getAll();
+    List<Change> getAll();
     /**
      * 根据id删除用户
      */
@@ -19,19 +19,19 @@ public interface UserMapper {
     /**
      *新增用户
      */
-    int add(User user);
+    int add(Change change);
     /**
      *通过用户id查询
      */
-    User getUserById(String id);
+    Change getUserById(String id);
     /**
      * 更新用户信息
      * @return
      */
-    int update(User user);
+    int update(Change change);
 
 //    List<User> findByName(String name);
-    List<User> findByName(String name);
+    List<Change> findByName(String name);
 
 
 
