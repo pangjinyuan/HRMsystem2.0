@@ -21,7 +21,7 @@ public class Change {
     public String emp_location;
     public String emp_edu_bgd;
     public String emp_entry_way;
-    public String emp_edu_school;
+
     public String post_change_key;
     public String change_type;
 
@@ -64,7 +64,7 @@ public class Change {
         this.emp_location = emp_location;
         this.emp_edu_bgd = emp_edu_bgd;
         this.emp_entry_way = emp_entry_way;
-        this.emp_edu_school = emp_edu_school;
+
     }
 
     public String getChange_type() {
@@ -235,13 +235,6 @@ public class Change {
         this.emp_entry_way = emp_entry_way;
     }
 
-    public String getEmp_edu_school() {
-        return emp_edu_school;
-    }
-
-    public void setEmp_edu_school(String emp_edu_school) {
-        this.emp_edu_school = emp_edu_school;
-    }
 
     @Override
     public String toString() {
@@ -266,7 +259,6 @@ public class Change {
                 ", emp_location='" + emp_location + '\'' +
                 ", emp_edu_bgd='" + emp_edu_bgd + '\'' +
                 ", emp_entry_way='" + emp_entry_way + '\'' +
-                ", emp_edu_school='" + emp_edu_school + '\'' +
                 ", post_change_key='" + post_change_key + '\'' +
                 ", change_type='" + change_type + '\'' +
                 '}';
