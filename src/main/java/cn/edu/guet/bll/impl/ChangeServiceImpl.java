@@ -47,6 +47,11 @@ public class ChangeServiceImpl implements ChangeService {
     public List<Change> findByName(String name) {
         return mapper.findByName(name);
     }
+    public int updateByPostKey(Change change){
+        return this.mapper.updateByPostKey(change);
+    }
+
+
 
 
 }

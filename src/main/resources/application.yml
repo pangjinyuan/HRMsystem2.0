@@ -6,14 +6,41 @@ spring:
     url: jdbc:oracle:thin:@47.113.216.111:1521:orcl
     password: HRM1234
     username: HRMDB
-
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 600000
+      maximum-pool-size: 10
+      auto-commit: true
+      pool-name: MyHikariCP
+      max-lifetime: 180000
+      connection-timeout: 30000
+      connection-test-query: SELECT * from dual
+      # connection-test-query: SELECT 1
+    type: com.zaxxer.hikari.HikariDataSource
+  activiti:
+    database-schema-update: true
+    check-process-definitions: false
+    db-identity-used: true
+    history-level: full
+    database-schema: HRMDB
+  devtools:
+    restart:
+      enabled: true
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 10MB
   thymeleaf:
     prefix: classpath:/templates/
-    suffix: .html
-    mode: HTML
-    encoding: UTF-8
+    check-template-location: true
     cache: false
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+    mode: HTML
+
 mybatis:
   type-aliases-package: com.example.bootdemo.bean
   mapper-locations: classpath:mapper/*Mapper.xml
-
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

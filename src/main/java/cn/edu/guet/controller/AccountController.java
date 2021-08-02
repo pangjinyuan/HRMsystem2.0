@@ -5,6 +5,9 @@ package cn.edu.guet.controller;
 import cn.edu.guet.bean.EmpAccount;
 import cn.edu.guet.bean.Result;
 import cn.edu.guet.bll.EmpAccountService;
+import cn.edu.guet.common.HttpUtils;
+import cn.edu.guet.dto.UserAndNameDto;
+import cn.edu.guet.service.UserAndNameService;
 import cn.edu.guet.utiltool.Sessionkey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,8 @@ import javax.servlet.http.HttpSession;
 public class AccountController {
     @Autowired
     private EmpAccountService accountService;
+    @Autowired
+    UserAndNameService userAndNameService;
 
     //@RequestMapping("/login.do")
     //public String login() {
@@ -33,6 +38,9 @@ public class AccountController {
         if(result.getRes().equals("enable")){
             String emp_id=emp.getEmp_id();
             session.setAttribute(Sessionkey.SESSION_KEY,emp_id);//存一个字符串
+            UserAndNameDto userAndNameDto = this.userAndNameService.queryUserAndNameDto(result.getEmp_id());
+            //方便查找用户,直接存入session
+            HttpUtils.setAttribute("user", userAndNameDto);
             return result;
         }else{
             return result;

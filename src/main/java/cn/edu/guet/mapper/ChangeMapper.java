@@ -33,7 +33,8 @@ public interface ChangeMapper {
 //    List<User> findByName(String name);
     List<Change> findByName(String name);
 
+    Change getChange(String emp_id);
 
-
+    int updateByPostKey(Change change);
 }
 

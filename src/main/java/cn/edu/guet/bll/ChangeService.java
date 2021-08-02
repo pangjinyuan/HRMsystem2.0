@@ -34,6 +34,7 @@ public interface ChangeService {
 
     List<Change> findByName(String name);
 
+    int updateByPostKey(Change change);
 
 
 }

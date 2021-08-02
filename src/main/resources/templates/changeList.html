@@ -18,14 +18,13 @@
         <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
         <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-
-        <!--        <link rel="stylesheet" href="/css/font.css"   type="text/css">-->
-        <!--        <link rel="stylesheet" href="/css/xadmin.css"  type="text/css">-->
         <script src="/js/jquery.min.js"></script>
         <script src="/lib/layui/layui.js"></script>
         <script type="text/javascript" src="/js/xadmin.js"></script>
+        <script src="/lib/layui/layui.js" charset="utf-8"></script>
         <!-- 导入地址-->
         <link rel="stylesheet" href="/lib/layui/css/layui.css"/>
+        <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
     </head>
 </head>
 
@@ -58,15 +57,14 @@
                 <div class="layui-card-header">
                     <button class="layui-btn" lay-submit="" lay-filter="sreach"><a href="#" onclick="edit()">升职申请</a>
                     </button>
-                    <!--                        <button class="layui-btn" lay-submit="" lay-filter="sreach"><a href="/change/adduser">离职申请</a>-->
-                    <!--                        </button>-->
                     <button class="layui-btn" lay-submit="" lay-filter="sreach"><a href="#" onclick="edit01()">离职申请</a>
+                    </button>
+                    <button class="layui-btn" lay-submit="" lay-filter="sreach"><a href="#" onclick="edit02()">申请</a>
                     </button>
                 </div>
 
-
                 <div class="layui-card-body ">
-                    <table class="layui-table layui-form">
+                    <table class="layui-table layui-form" id="test" lay-filter="test">
                         <thead>
                         <tr>
                             <th>序号</th>
@@ -74,12 +72,12 @@
                             <th>部门id</th>
                             <th>部门名称</th>
                             <th>职位id</th>
-                            <th>职位名称</th>
+<!--                            <th>职位名称</th>-->
                             <th>姓名</th>
                             <th>性别</th>
-                            <th>入职时间</th>
+<!--                            <th>入职时间</th>-->
                             <th>变动类型</th>
-                            <th>手机号</th>
+<!--                            <th>手机号</th>-->
                             <th>状态</th>
                             <th>操作</th>
                         </thead>
@@ -90,14 +88,29 @@
                             <td th:text="${change.dept_id}"></td>
                             <td th:text="${change.dept_name}"></td>
                             <td th:text="${change.post_id}"></td>
-                            <td th:text="${change.post_name}"></td>
                             <td th:text="${change.emp_name}"></td>
                             <td th:text="${change.emp_sex}"></td>
-                            <td th:text="${change.emp_entry_time}"></td>
                             <td th:text="${change.change_type}"></td>
-                            <td th:text="${change.emp_phone_number}"></td>
-                            <td th:text="${change.emp_state}"></td>
+                            <td th:if="${change.emp_state=='0'}" th:text="未提交" style="color: #00FFFF">
+                            </td>
+                            <td th:if="${change.emp_state=='1'}" th:text="已提交" style="color: #0000FF">
+                            </td>
+                            <td th:if="${change.emp_state=='2'}" th:text="已审批" style="color: #FD482C">
+                            </td>
+
                             <td>
+<!--                                <a th:href="@{/workflow/startLeaveProcess(postChangeKey=${change.post_change_key},processType='stationApplication')}">-->
+<!--                                    <button class="layui-btn">申请</button>-->
+<!--                                </a>-->
+<!--                                <button><input ></button>-->
+                                <form action="/workflow/startLeaveProcess" method="post">
+                                    <input type="hidden" name="processType" value="stationApplication">
+                                    <input type="hidden" name="postChangeKey" th:value="${change.post_change_key}">
+                                    <input type="submit">
+                                </form>
+
+<!--                                <a class="layui-btn layui-btn-xs" lay-event="submitApplication" th:if="${change.emp_state=='0'}" href="#" onclick="submitApplication()">申请</a>-->
+
                                 <a th:href="@{/change/finduser(id=${change.emp_id})}">
                                     <button class="layui-btn">修改</button>
                                 </a>
@@ -105,16 +118,12 @@
                                 <a th:href="@{/change/deluser(id=${change.emp_id})}">
                                     <button class="layui-btn layui-btn-danger">删除</button>
                                 </a>
+
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <!--                        <div class="text clearfix" style="text-align: right"><p>当前 <span th:text="${pageInfo.pageNum}"></span> 页,总 <span th:text="${pageInfo.pages}"></span>-->
-                    <!--                            页,共 <span th:text="${pageInfo.total}"></span> 条记录</p>-->
-                    <!--                        <a th:href="@{/change/changeList}">首页</a>-->
-                    <!--                        <a th:href="@{/change/changeList(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>-->
-                    <!--                        <a th:href="@{/change/changeList(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>-->
-                    <!--                        <a th:href="@{/change/changeList(pageNum=${pageInfo.pages})}">尾页</a></div>-->
+
                     <div class="layui-card-body ">
                         <div class="page">
                             <div>
@@ -181,15 +190,15 @@
                                 </div>
                             </div>
 
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">
-                                    <span class="x-red">*</span>职位名称:
-                                </label>
-                                <div class="layui-input-inline">
-                                    <input class="layui-input" type="text" id="post_name" name="post_name"
-                                           th:value="${change.post_name}">
-                                </div>
-                            </div>
+<!--                            <div class="layui-form-item">-->
+<!--                                <label class="layui-form-label">-->
+<!--                                    <span class="x-red">*</span>职位名称:-->
+<!--                                </label>-->
+<!--                                <div class="layui-input-inline">-->
+<!--                                    <input class="layui-input" type="text" id="post_name" name="post_name"-->
+<!--                                           th:value="${change.post_name}">-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                             <div class="layui-form-item">
                                 <label class="layui-form-label">
@@ -211,15 +220,15 @@
                                 </div>
                             </div>
 
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">
-                                    <span class="x-red">*</span>入职时间:
-                                </label>
-                                <div class="layui-input-inline">
-                                    <input class="layui-input" type="text" id="emp_entry_time" name="emp_entry_time"
-                                           th:value="${change.emp_entry_time}">
-                                </div>
-                            </div>
+<!--                            <div class="layui-form-item">-->
+<!--                                <label class="layui-form-label">-->
+<!--                                    <span class="x-red">*</span>入职时间:-->
+<!--                                </label>-->
+<!--                                <div class="layui-input-inline">-->
+<!--                                    <input class="layui-input" type="text" id="emp_entry_time" name="emp_entry_time"-->
+<!--                                           th:value="${change.emp_entry_time}">-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                             <div class="layui-form-item">
                                 <label class="layui-form-label">
@@ -233,120 +242,16 @@
 
                             <div class="layui-form-item">
                                 <label class="layui-form-label">
-                                    <span class="x-red">*</span>手机号:
+                                    <span class="x-red">*</span>状态:
                                 </label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" type="text" id="emp_phone_number" name="emp_phone_number"
-                                           th:value="${change.emp_phone_number}">
+                                    <input class="layui-input" type="text" id="emp_state" name="emp_state"
+                                           th:value="${change.emp_state}">
                                 </div>
                             </div>
 
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">
-                                </label>
-                                <input class="layui-btn" type="submit" value="保存">
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
-
-<!--                aaaaaaaaaaaaaa-->
-<!--                <div class="layui-row" id="popSearchRoleTest" style="display:none;">-->
-<!--                    <div class="layui-col-md11">-->
-<!--                        <form class="layui-form" id="update" th:action="@{'update'}" method="post" th:object="${change}">-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>员工id:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="emp_id" name="emp_id"-->
-<!--                                           th:value="${change.emp_id}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>部门id:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="dept_id" name="dept_id"-->
-<!--                                           th:value="${change.emp_id}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>部门名称:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="dept_name" name="dept_name"-->
-<!--                                           th:value="${change.dept_name}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>职位id:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="post_id" name="post_id"-->
-<!--                                           th:value="${change.post_id}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>职位名称:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="post_name" name="post_name"-->
-<!--                                           th:value="${change.post_name}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>姓名:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="emp_name" name="emp_name"-->
-<!--                                           th:value="${change.emp_name}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>性别:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="emp_sex" name="emp_sex"-->
-<!--                                           th:value="${change.emp_sex}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>入职时间:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="emp_entry_time" name="emp_entry_time"-->
-<!--                                           th:value="${change.emp_entry_time}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>变动类型:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="change_type" name="change_type"-->
-<!--                                           th:value="${change.change_type}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
+                            <!--                            <div class="layui-form-item">-->
 <!--                                <label class="layui-form-label">-->
 <!--                                    <span class="x-red">*</span>手机号:-->
 <!--                                </label>-->
@@ -356,31 +261,14 @@
 <!--                                </div>-->
 <!--                            </div>-->
 
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                    <span class="x-red">*</span>状态:-->
-<!--                                </label>-->
-<!--                                <div class="layui-input-inline">-->
-<!--                                    <input class="layui-input" type="text" id="emp_state" name="emp_state"-->
-<!--                                           th:value="${change.emp_state}">-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="layui-form-item">-->
-<!--                                <label class="layui-form-label">-->
-<!--                                </label>-->
-<!--                                <input class="layui-btn" type="submit"   value="确认更改">-->
-<!--                            </div>-->
-
-<!--&lt;!&ndash;                            <div class="layui-form-item">&ndash;&gt;-->
-<!--&lt;!&ndash;                                <label class="layui-form-label">&ndash;&gt;-->
-<!--&lt;!&ndash;                                </label>&ndash;&gt;-->
-<!--&lt;!&ndash;                                <button class="layui-btn" lay-submit lay-filter="modify">确认更改</button>&ndash;&gt;-->
-<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
-<!--                        </form>-->
-
-<!--                    </div>-->
-<!--                </div>-->
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">
+                                </label>
+                                <input class="layui-btn" type="submit" value="保存">
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -433,43 +321,84 @@
         })
     }
 
-    // // 回显数据
-    // function edit02(id){
-    //     layui.use('layer',function(){
-    //         var layer=layui.layer;
-    //         layer.open({
-    //             type:1,
-    //             title:"编辑个人信息",
-    //             shade: 0.3,
-    //             content:$("#popSearchRoleTest").html(),
-    //             area: ['500px','500px']
-    //         });
-    //         $.ajax({
-    //             cache:false,
-    //             url: '/change/finduser',
-    //             type: 'POST',
-    //             dataType:'json',
-    //             data: {
-    //                 'id':id
-    //             },
-    //             success: function (change) {
-    //                 $("[name='emp_id']").val(change.emp_id);
-    //                 $("[name='dept_id']").val(change.dept_id);
-    //                 $("[name='dept_name']").val(change.dept_name);
-    //                 $("[name='post_id']").val(change.post_id);
-    //                 $("[name='post_name']").val(change.post_name);
-    //                 $("[name='emp_name']").val(change.emp_name);
-    //                 $("[name='emp_sex']").val(change.emp_sex);
-    //                 $("[name='emp_entry_time']").val(change.emp_entry_time);
-    //                 $("[name='change_type']").val(change.change_type);
-    //                 $("[name='emp_phone_number']").val(change.emp_phone_number);
-    //                 $("[name='emp_state']").val(change.emp_state);
-    //             }
-    //         })
-    //
-    //     });
-    // }
+    function edit02() {
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.open({
+                //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                type: 1,
+                title: "申请",
+                shade: 0.3,
+                content: $("#dateDemands").html(),
+                area: ['500px', '500px']
+            });
+        });
+    }
 
 
+</script>
+
+<!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer','jquery'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let laydate = layui.laydate;
+        let layer = layui.layer;
+        let $ = layui.jquery;
+
+        //监听工具条
+        table.on('tool(test)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                /*layer.alert('编辑行：<br>' + JSON.stringify(data))*/
+                window.edit(obj)
+            } else if (obj.event === 'submitApplication') {
+                startProcess(obj)
+            } else if (obj.event === 'viewSpProcess') {
+                layer.msg('查看流程')
+            } else if (obj.event === 'LeaveCancellation') {
+                LeaveCancellation(obj)
+            }
+        });
+        function startProcess() {
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                layer.open({
+                    //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                    type: 1,
+                    title: "升职申请",
+                    shade: 0.3,
+                    area: ['500px', '500px']
+                });
+            });
+        }
+
+
+
+        // //启动流程
+        // function startProcess(data) {
+        //     layer.confirm('确定要提交【' + data.data.emp_name + '】请升职单吗？', {icon: 3, title: '提示信息'}, function (index) {
+        //         $.post("/workflow/startLeaveProcess", {
+        //             leaveBillId: data.data.emp_id,  //将需要删除的id作为参数传入
+        //             processType: 'changeList'
+        //         }, function (data) {
+        //             //刷新table
+        //             tableIns.reload();
+        //             //关闭提示框
+        //             layer.close(index);
+        //         })
+        //     });
+        // }
+
+    });
 </script>
 </html>

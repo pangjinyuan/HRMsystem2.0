@@ -27,8 +27,54 @@
         where emp_id=#{emp_id,jdbcType=VARCHAR}
     </update>
 
+    <update id="updateByPostKey" parameterType="cn.edu.guet.bean.Change">
+        update POST_CHANGE_TABLE set
+        <if test="dept_id != null">
+            dept_id=#{dept_id,jdbcType=VARCHAR},
+        </if>
+        <if test="dept_name != null">
+            dept_name=#{dept_name,jdbcType=VARCHAR},
+        </if>
+        <if test="post_id != null">
+            post_id=#{post_id,jdbcType=VARCHAR},
+        </if>
+        <if test="post_name != null">
+            post_name=#{post_name,jdbcType=VARCHAR},
+        </if>
+
+        <if test="emp_name != null">
+            emp_name=#{emp_name,jdbcType=VARCHAR},
+        </if>
+        <if test="emp_sex != null">
+            emp_sex=#{emp_sex,jdbcType=VARCHAR},
+        </if>
+        <if test="emp_entry_time != null">
+            emp_entry_time=#{emp_entry_time,jdbcType=VARCHAR},
+        </if>
+
+        <if test="change_type != null">
+            change_type=#{change_type,jdbcType=VARCHAR},
+        </if>
+        <if test="emp_phone_number != null">
+            emp_phone_number=#{emp_phone_number,jdbcType=VARCHAR},
+        </if>
+        <if test="emp_state != null">
+            emp_state=#{emp_state,jdbcType=VARCHAR}
+        </if>
+        where post_change_key=#{post_change_key,jdbcType=DECIMAL}
+    </update>
+
     <select id="findByName" resultType="cn.edu.guet.bean.Change">
     select * from POST_CHANGE_TABLE where CONCAT(emp_id,emp_name)like '%'||#{value}||'%' ORDER BY post_change_key
     </select>
+
+    <select id="getChange"  parameterType="string" resultType="cn.edu.guet.bean.Change">
+        SELECT * FROM POST_CHANGE_TABLE WHERE  post_change_key=#{post_change_key}
+    </select>
+
+
+
+
+
 
 </mapper>
