@@ -21,6 +21,7 @@ public class Change {
     public String emp_location;
     public String emp_edu_bgd;
     public String emp_entry_way;
+    public String emp_edu_school;
 
     public String post_change_key;
     public String change_type;
