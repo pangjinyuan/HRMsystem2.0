@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.mapper.AccountMapper">
+    <select id="checkEmpInfo" parameterType="string" resultType="cn.edu.guet.bean.EmpAccount">
+        SELECT emp_id,emp_password,post_id FROM EMP_ACCOUNT_TABLE WHERE emp_id=#{emp_id}
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+
+/*update.html样式*/
+*{
+    background-color: #D3D4D3;
+}
+
+.box_up{
+    width: 400px;
+    margin: 80px auto;
+}
+
+label{
+    float: left;
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    text-align: right;
+    line-height: 30px;
+    padding-right: 10px;
+}
+.box_in input{
+    width: 220px;
+    height: 30px;
+    outline:0;
+    border: 1px solid gray;
+    padding-left: 10px;
+}
+.box_in{
+    padding-top: 14px;
+}
+.box_up .box_btn {
+    padding-top: 15px;
+    padding-left: 90px;
+}
+.box_up .box_btn input{
+    width: 232px;
+    height: 35px;
+    outline:0;
+    border: 1px solid gray;
+    background: #008000;
+    color: white;
+    font-size: 16px;
+}

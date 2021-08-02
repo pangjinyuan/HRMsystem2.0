@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<link rel="stylesheet" type="text/css" th:href="@{/css/ui.css}"/>
+<body>
+<form action="/user/update" method="post">
+    <div class="box_up">
+        <input class="zone_de_texte" id="emp_id" type="hidden" name="emp_id" th:value="${user.emp_id}"/>
+        <div class="box_in">
+            <label>部门id:</label>
+            <input class="zone_de_texte" id="dept_id" type="text" name="dept_id" th:value="${user.dept_id}"/>
+        </div>
+        <div class="box_in">
+            <label>部门名称:</label>
+            <input class="zone_de_texte" id="dept_name" type="text" name="dept_name" th:value="${user.dept_name}"/>
+        </div>
+        <div class="box_in">
+            <label>职位id:</label>
+            <input class="zone_de_texte" id="post_id" type="text" name="post_id" th:value="${user.post_id}"/>
+        </div>
+        <div class="box_in">
+            <label>职位名称:</label>
+            <input class="zone_de_texte" id="post_name" type="text" name="post_name" th:value="${user.post_name}"/>
+        </div>
+        <div class="box_in">
+            <label>姓名:</label>
+            <input class="zone_de_texte" type="emp_name" name="emp_name" th:value="${user.emp_name}"/>
+        </div>
+        <div class="box_in">
+            <label>性别:</label>
+            <input class="zone_de_texte" type="emp_sex" name="emp_sex" th:value="${user.emp_sex}"/>
+        </div>
+        <div class="box_in">
+            <label>入职时间:</label>
+            <input class="zone_de_texte" type="text" name="emp_entry_time" th:value="${user.emp_entry_time}"/>
+        </div>
+        <div class="box_in">
+            <label>变动类型:</label>
+            <input class="zone_de_texte" type="change_type" name="change_type" th:value="${user.change_type}"/>
+        </div>
+        <div class="box_in">
+            <label>手机号:</label>
+            <input class="zone_de_texte" type="text" name="emp_phone_number" th:value="${user.emp_phone_number}"/>
+        </div>
+        <div class="box_in">
+            <label>状态:</label>
+            <input class="zone_de_texte" type="emp_state" name="emp_state" th:value="${user.emp_state}"/>
+        </div>
+        <div class="box_btn">
+            <input class="button" type="submit" value="确定"/>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+

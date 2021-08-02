@@ -1,0 +1,128 @@
+<html   class="x-admin-sm" lang="en" xmlns:th="http://www.thymeleaf.org" ><head>
+    <meta charset="UTF-8">
+    <title>HRMpower</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi">
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+    <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/hrmlog.js"></script>
+    <script src="https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190"></script><script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <link id="layuicss-layer" rel="stylesheet" href="../lib/layui/css/modules/layer/default/layer.css?v=3.1.1" media="all"></head>
+    </head>
+<body>
+<div class="x-nav">
+      <span class="layui-breadcrumb" style="visibility: visible;">
+       <a ><cite>权力设置</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="/LogCheckAll" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+
+<div class="layui-container" style="width: 100%;height: 100%">
+    <div class="layui-row">
+                <div class="layui-col-md4">
+                    <form class="layui-form layui-col-space5" action="/addnewpower" method="POST">
+                        <div class="layui-inline layui-show-xs-block">
+                            <label></label><span>增加一个新的权限</span></label>
+                            <input  name="father_name" type="text" required  lay-verify="required" placeholder="请输入父模块名称(必填)" autocomplete="off" class="layui-input">
+                            <input name="power_name" type="text" required  lay-verify="required" placeholder="请输入新子模块名称(必填)" autocomplete="off" class="layui-input">
+                            <input name="url" type="text" required  lay-verify="required" placeholder="请输入url(必填)" autocomplete="off" class="layui-input">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="add">增加</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-col-md4">
+            <form class="layui-form layui-col-space5" action="/updateoldpower" method="POST">
+                <div class="layui-inline layui-show-xs-block">
+                    <label><span>修改一个旧的权限</span></label>
+                    <select  name="power_key" lay-verify="required" lay-search>
+                        <option value="">请选择一个权限</option>
+                        <option th:each="CheckPowerInfo,infoStat:${powerlist}" th:value="${CheckPowerInfo.id}" th:text="${CheckPowerInfo.power_name}"></option>
+                    </select>
+                    <input  name="url" type="text" required  lay-verify="required" placeholder="请输入URL(必填)" autocomplete="off" class="layui-input">
+                    <div class="layui-form-item">
+                    <button class=" layui-btn layui-btn-normal" lay-submit="" lay-filter="add">修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+                <div class="layui-col-md4">
+            <form class="layui-form layui-col-space5" action="/deleteoldpower" method="POST">
+                <div class="layui-inline layui-show-xs-block">
+                    <label> <span>删除一个旧的权限</span></label>
+                    <select  name="delete_id" lay-verify="required" lay-search>
+                        <option value="">请选择一个权限</option>
+                        <option th:each="CheckPowerInfo,infoStat:${powerlist}" th:value="${CheckPowerInfo.id}" th:text="${CheckPowerInfo.power_name}"></option>
+                    </select>
+                    <div class="layui-form-item">
+                    <button class=" layui-btn layui-btn-danger " lay-submit="" lay-filter="add">删除</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <table class="layui-table layui-form" >
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>父权限模块名称</th>
+                            <th>子权限模块名称</th>
+                            <th>地址</th>
+                        </tr></thead>
+                        <tbody id="adminTbody">
+                        <tr th:each="CheckPowerInfo,infoStat:${powerlist}">
+                            <td th:text="${CheckPowerInfo.id}"></td>
+                            <td th:text="${CheckPowerInfo.father_name}"></td>
+                            <td th:text="${CheckPowerInfo.power_name}"></td>
+                            <td th:text="${CheckPowerInfo.url}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div>
+                            <a class="num" href="###" id="firstPage">首页</a>
+                            <a class="prev" href="###" id="prePage">&lt;&lt;</a>
+                            <span class="current" id="currentPage"></span>
+                            <a class="next" href="###"id="nextPage">&gt;&gt;</a>
+                            <a class="num" href="###" id="lastPage">尾页</a>
+                            <a class="num" href="###" id="totalpage"></a>
+                            <a class="num"> <select  id="jumpWhere"> </select></a>
+                            <a href="###" id="jumpPage" onclick="jumpPage()">跳转</a>
+                            <a class="num" id="countsum"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+</div>
+
+</body>
+<script>
+    layui.use(['form','layer'], function(){
+
+
+        form.on('checkbox(father)', function(data){
+
+            if(data.elem.checked){
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            }else{
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+
+
+    });
+</script>
+</html>

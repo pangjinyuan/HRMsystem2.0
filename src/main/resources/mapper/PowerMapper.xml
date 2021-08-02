@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.mapper.PowerMapper">
+        <resultMap id="setPostName" type="cn.edu.guet.bean.Post">
+            <id property="id" column="POST_TABLE_KEY"></id>
+            <result property="post_id" column="post_id"></result>
+            <result property="post_name" column="post_name"></result>
+            <result property="post_level" column="post_level"></result>
+            <result property="post_resp" column="post_resp"></result>
+        </resultMap>
+        <resultMap id="setPower" type="cn.edu.guet.bean.Power">
+            <id property="id" column="POWER_KEY"></id>
+            <result property="father_name" column="father_name"></result>
+            <result property="power_name" column="power_name"></result>
+            <result property="url"   column="url"></result>
+        </resultMap>
+        <resultMap id="setMap" type="cn.edu.guet.bean.EmpPower">
+            <id property="EMP_POWER_KEY" column="EMP_POWER_KEY"></id>
+            <result property="power_name" column="power_name"></result>
+            <result property="father_id" column="father_id" ></result>
+            <result property="father_name" column="father_name"></result>
+            <result property="url"         column="url"></result>
+        </resultMap>
+    <insert id="addPower" parameterType="cn.edu.guet.bean.EmpPower">
+        INSERT INTO EMP_POWER_TABLE(post_id,power_name,father_name,url) VALUES ('${emppower.post_id}','${emppower.power_name}','${emppower.father_name}','${emppower.url}')
+    </insert>
+    <insert id="addnewPower">
+        INSERT INTO POWER_TABLE(father_name,power_name,url) values('${father_name}','${power_name}','${url}')
+    </insert>
+    <update id="updateOldPower">
+        Update power_table set url='${url}' where POWER_KEY=${id}
+    </update>
+    <delete id="deletePower">
+        DELETE EMP_POWER_TABLE WHERE EMP_POWER_TABLE.EMP_POWER_KEY=
+        (
+            SELECT E.EMP_POWER_KEY
+            FROM EMP_POWER_TABLE E,POWER_TABLE P
+            WHERE E.POWER_NAME=P.POWER_NAME AND E.POST_ID='${post_id}' AND P.POWER_KEY=${power_key}
+        )
+
+    </delete>
+    <delete id="deleteOldPower">
+        DELETE POWER_TABLE WHERE POWER_KEY='${id}'
+    </delete>
+    <select id="getEmpPower" parameterType="string" resultMap="setMap">
+        <!--SELECT * FROM emp_power_table WHERE post_id=#{emp_id}-->
+        SELECT * FROM emp_power_table WHERE post_id=( SELECT post_id from EMP_ACCOUNT_TABLE  where emp_id='${emp_id}')
+    </select>
+    <select id="getPower" resultMap="setPower" >
+        SELECT * FROM POWER_TABLE
+    </select>
+    <select id="getPostPower"  parameterType="string" resultMap="setMap">
+        SELECT * FROM emp_power_table WHERE post_id='${emp_id}'
+    </select>
+    <select id="getPostName"  resultMap="setPostName">
+        SElECT * FROM POST_TABLE
+    </select>
+    <select id="getPowerByid" resultType="cn.edu.guet.bean.Power">
+        SELECT * FROM POWER_TABLE WHERE POWER_KEY=${POWER_KEY}
+    </select>
+</mapper>

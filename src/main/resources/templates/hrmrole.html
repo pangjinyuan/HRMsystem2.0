@@ -1,0 +1,126 @@
+<html class="x-admin-sm" lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <title>roleupdate</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi">
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+    <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/hrmrole.js"></script>
+    <script src="https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190"></script><script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <link id="layuicss-layer" rel="stylesheet" href="../lib/layui/css/modules/layer/default/layer.css?v=3.1.1" media="all"></head>
+<body>
+<div class="x-nav">
+        <span class="layui-breadcrumb" style="visibility: visible;">
+         <a><cite>角色操作</cite></a>
+        </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" action="/rolepower" method="POST" >
+            <div class="layui-form-item" style="width: 20%">
+                <select  lay-verify=""  name="postoption">
+                    <option  th:value="${selectedpost_name}" th:text="${selectedpost_name}" >请选择一个职位</option>
+                    <option th:each="name,infoStat:${post_name}"  th:text="${name}"  th:value="${name}"></option>
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <button  type="submit"   class="layui-btn" lay-submit="" lay-filter="" >查询</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <div class="layui-fluid">
+        <div class="layui-row">
+        <form action="/addepowerlist" method="post" class="layui-form layui-form-pane">
+            <div class="layui-form-item layui-form-text">
+                <input type="hidden" name="postkey" th:value="${selectedpost_name}">
+                <label class="layui-form-label" >
+                    未拥有权限
+                </label>
+                <table class="layui-table layui-input-block" id="notown">
+                    <tbody>
+                    <tr   th:each="notfathernames,notinfoStat:${NotOwnPostMap}">
+                        <td style="width: 15%">
+                            <span  th:text="${notinfoStat.current.key}"></span>
+                        </td>
+                        <td >
+                            <input type='checkbox' name="add" th:each="Notpostpower,NotpostStat:${NotOwnPostMap.get(notinfoStat.current.key)}" th:title="${Notpostpower.getPower_name()}" th:value="${Notpostpower.getId()}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" lay-submit="" lay-filter="add">增加</button>
+            </div>
+
+        </form>
+        <form action="/deletepowerlist" method="post" class="layui-form layui-form-pane">
+            <div class="layui-form-item layui-form-text">
+                <input type="hidden" name="postkey" th:value="${selectedpost_name}">
+                <label class="layui-form-label">
+                    拥有权限
+                </label>
+                <table class="layui-table layui-input-block" id="own">
+                    <tbody >
+                    <tr  th:each="fathernames,infoStat:${OwnPostMap}">
+                        <td style="width: 15%">
+                            <span  th:text="${infoStat.current.key}"></span>
+                        </td>
+                        <td >
+                            <input type='checkbox' name="delete"th:each="postpower,postStat:${OwnPostMap.get(infoStat.current.key)}" th:title="${postpower.getPower_name()}" th:value="${postpower.getId()}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-danger" lay-submit="" lay-filter="add">减少</button>
+            </div>
+         </form>
+        </div>
+    </div>
+
+<script>
+    layui.use(['form','layer'], function(){
+
+
+        form.on('checkbox(father)', function(data){
+
+            if(data.elem.checked){
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            }else{
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+
+
+    });
+    
+    function refreshComment() {
+        var post_name=document.getElementById("postoption").value;
+        console.log(post_name);
+        var url="/rolepower";
+        $.ajax({
+            url:url,
+            type:'POST',
+            data:{postoption:post_name},
+            success:function (data) {
+                $("#id_comment_refresh").html(data);
+            }
+
+            })
+
+    }
+</script>
+
+
+</body></html>
