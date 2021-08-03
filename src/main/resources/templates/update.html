@@ -8,7 +8,10 @@
 <body>
 <form action="/change/update" method="post">
     <div class="box_up">
-        <input class="zone_de_texte" id="emp_id" type="hidden" name="emp_id" th:value="${change.emp_id}"/>
+        <div class="box_in">
+            <label>账号id:</label>
+            <input class="zone_de_texte" id="emp_id" type="text" name="emp_id" th:value="${change.emp_id}"/>
+        </div>
         <div class="box_in">
             <label>部门id:</label>
             <input class="zone_de_texte" id="dept_id" type="text" name="dept_id" th:value="${change.dept_id}"/>
